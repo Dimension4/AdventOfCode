@@ -24,7 +24,7 @@
         {
             "label": "build rust int_code",
             "type": "cargo",
-            "subcommand": "build",
+            "command": "build",
             "problemMatcher": [
                 "$rustc"
             ],

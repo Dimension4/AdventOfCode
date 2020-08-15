@@ -13,6 +13,7 @@
 [Oo]bj/
 
 .ionide
+.fake
 
 # rust
 target/
