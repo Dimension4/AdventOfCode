@@ -5,17 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "F# IntCode",
+            "name": "debug rust int_code",
+            "type": "lldb",
+            "request": "launch",
+            "preLaunchTask": "build rust int_code",
+            "program": "${workspaceFolder}/rust/int_code/target/debug/int_code.exe",
+            "cwd": "${workspaceFolder}/rust/int_code/target/debug",
+            "console": "integratedTerminal",
+            "args": []
+        },
+        {
+            "name": "debug F# IntCode",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build F# IntCode",
             "program": "${workspaceFolder}/F#/IntCode/bin/Debug/netcoreapp3.1/IntCode.dll",
+            "cwd": "${workspaceFolder}/F#/IntCode/bin/Debug/netcoreapp3.1",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
             "args": [
                 "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9"
-            ],
-            "cwd": "${workspaceFolder}",
-            "stopAtEntry": false,
-            "console": "integratedTerminal"
+            ]
         }
     ]
 }

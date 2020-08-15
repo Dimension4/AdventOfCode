@@ -8,7 +8,11 @@
 # Local History for Visual Studio Code
 .history/
 
+# F#
 [Bb]in/
 [Oo]bj/
 
 .ionide
+
+# rust
+target/
