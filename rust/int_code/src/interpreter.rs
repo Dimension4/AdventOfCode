@@ -5,8 +5,8 @@ use std::{fmt::Debug, io::Write};
 pub fn interpret(mem: &mut [i32], pos: usize) -> Result<i32, String> {
     let mut prog = decode(mem, pos)?;
     match prog.op_code {
-        OpCode::Add => prog.apply_binary(std::ops::Add::add),
-        OpCode::Multiply => prog.apply_binary(std::ops::Mul::mul),
+        OpCode::Add => prog.binary_op(std::ops::Add::add),
+        OpCode::Multiply => prog.binary_op(std::ops::Mul::mul),
         OpCode::Input => {
             let val = read_user_input("Input: ");
             prog.store(0, val);
@@ -18,8 +18,8 @@ pub fn interpret(mem: &mut [i32], pos: usize) -> Result<i32, String> {
         }
         OpCode::JumpIfTrue => prog.jump(true),
         OpCode::JumpIfFalse => prog.jump(false),
-        OpCode::LessThan => prog.apply_binary(|a, b| if a < b { 1 } else { 0 }),
-        OpCode::EqualsTo => prog.apply_binary(|a, b| if a == b { 1 } else { 0 }),
+        OpCode::LessThan => prog.binary_op(|a, b| if a < b { 1 } else { 0 }),
+        OpCode::EqualsTo => prog.binary_op(|a, b| if a == b { 1 } else { 0 }),
         OpCode::Halt => return Ok(mem[0]),
     }
 
@@ -58,14 +58,14 @@ enum ParamMode {
     Positional = 0,
     Immediate = 1
 }
-struct OpState<'a> {
+struct ProgState<'a> {
     op_code: OpCode,
     param_modes: [ParamMode; 3],
     memory: &'a mut [i32],
     ins_ptr: usize,
 }
 
-impl<'a> OpState<'a> {
+impl<'a> ProgState<'a> {
     fn load(&self, index: usize) -> i32 {
         let pos = self.ins_ptr + index + 1;
         match self.param_modes[index] {
@@ -83,26 +83,26 @@ impl<'a> OpState<'a> {
     }
 
     fn jump(&mut self, test: bool) {
-        self.ins_ptr = match self.load(0) != 0 {
-            x if x == test => self.load(1) as usize,
+        self.ins_ptr = match self.load(0) {
+            x if (x != 0) == test => self.load(1) as usize,
             _ => self.ins_ptr + 3
         };
     }
 
-    fn apply_binary<T: Into<i32>>(&mut self, op: fn(i32, i32) -> T) {
+    fn binary_op<T: Into<i32>>(&mut self, op: fn(i32, i32) -> T) {
         let res = op(self.load(0), self.load(1));
         self.store(2, res.into());
         self.ins_ptr += 4;
     }
 }
 
-impl<'a> Debug for OpState<'a> {
+impl<'a> Debug for ProgState<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("instruction: {}, op-code: {:?}, param-modes: {:?}", self.ins_ptr, self.op_code, self.param_modes))
     }
 }
 
-fn decode(memory: &mut [i32], ins_ptr: usize) -> Result<OpState, String> {
+fn decode(memory: &mut [i32], ins_ptr: usize) -> Result<ProgState, String> {
     let mut instruction = memory[ins_ptr];
     let op_code = OpCode::from_i32(instruction % 100).ok_or(format!("Invalid op-code {} at {}. Aborting.", instruction % 100, ins_ptr))?;
 
@@ -113,7 +113,7 @@ fn decode(memory: &mut [i32], ins_ptr: usize) -> Result<OpState, String> {
         instruction /= 10;
     };
 
-    Ok(OpState{op_code, param_modes, memory, ins_ptr})
+    Ok(ProgState{op_code, param_modes, memory, ins_ptr})
 }
 
 fn read_user_input(msg: &str) -> i32 {
