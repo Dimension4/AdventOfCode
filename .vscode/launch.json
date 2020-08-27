@@ -8,9 +8,9 @@
             "name": "debug rust int_code",
             "type": "lldb",
             "request": "launch",
-            "preLaunchTask": "build rust int_code",
-            "program": "${workspaceFolder}/rust/int_code/target/debug/int_code.exe",
-            "cwd": "${workspaceFolder}/rust/int_code/target/debug",
+            "preLaunchTask": "build current rust project",
+            "program": "${fileDirname}/../target/debug/*.exe",
+            "cwd": "${fileDirname}/../target/debug",
             "console": "integratedTerminal",
             "args": []
         },

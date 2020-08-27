@@ -1,5 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "./rust/int_code/Cargo.toml"
+        "./rust/int_code/Cargo.toml",
+        "./rust/crossed_wires/Cargo.toml"
     ]
 }

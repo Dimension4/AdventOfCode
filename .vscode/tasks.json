@@ -22,14 +22,14 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build rust int_code",
+            "label": "build current rust project",
             "type": "cargo",
             "command": "build",
             "problemMatcher": [
                 "$rustc"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/rust/int_code"
+                "cwd": "${fileDirname}/.."
             },
             "group": "build"
         }
