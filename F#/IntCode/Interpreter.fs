@@ -62,7 +62,7 @@ let lessThan a b = if a < b then 1 else 0
 let equalsTo a b = if a = b then 1 else 0
 
 
-let rec interpret (mem: int array) pos =
+let rec interpret (mem: int array) pos inputFunc outputFunc =
     let opCode, paramModes = decodeInstruction mem.[pos]
     let load idx = load mem (pos + idx + 1) paramModes.[idx]
     let store idx = store mem (pos + idx + 1)
@@ -74,10 +74,10 @@ let rec interpret (mem: int array) pos =
         | OpCode.Add -> binaryOp (+)
         | OpCode.Multiply -> binaryOp (*)
         | OpCode.Input ->
-            readUserInput "Input: " |> store 0
+            inputFunc () |> store 0
             pos + 2
         | OpCode.Output ->
-            load 0 |> printfn "Output: %d"
+            load 0 |> outputFunc
             pos + 2
         | OpCode.JumpIfTrue -> jumpOp true
         | OpCode.JumpIfFalse -> jumpOp false
@@ -87,21 +87,5 @@ let rec interpret (mem: int array) pos =
 
     match opCode, newPos with
     | OpCode.Halt, _ -> Ok mem.[0]
-    | _, x when x >= 0 -> interpret mem x
+    | _, x when x >= 0 -> interpret mem x inputFunc outputFunc
     | op, _ -> sprintf "Error. Core dumped.\n\n%A\n\nInvalid op code %d at %d. Aborting." mem (int op) pos |> Error
-
-
-let rec bruteForceSolve (memory: int array) instructionPtr result noun verb =
-    let mem = Array.copy memory
-    mem.[1..2] <- [| noun; verb |]
-    match interpret mem instructionPtr with
-    | Ok res when res = result -> Ok (noun * 100 + verb)
-    | _ when noun < 99 || verb < 99 ->
-        let nextVerb = (verb + 1) % 100
-        let nextNoun = if nextVerb > verb then noun else noun + 1
-        bruteForceSolve memory instructionPtr result nextNoun nextVerb
-    | _ -> Error "Program could not be solved."
-
-
-let solve (memory: int array) instructionPtr result =
-    bruteForceSolve memory instructionPtr result 0 0
