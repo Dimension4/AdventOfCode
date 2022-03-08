@@ -17,3 +17,6 @@
 
 # rust
 target/
+
+#koka
+.koka/
