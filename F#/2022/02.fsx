@@ -1,7 +1,3 @@
-
-open System
-open System.IO
-
 type Shape =
     | Rock = 0
     | Paper = 1
@@ -17,7 +13,7 @@ let split (s: string) = s.Split(' ')
 
 let score (a: Shape, b: Shape) = ((4 + int b - int a) % 3) * 3 + 1 + int b
 
-let input = fsi.CommandLineArgs[1] |> File.ReadAllLines |> Array.map split
+let input = fsi.CommandLineArgs[1].Split('\n') |> Array.map split
 
 input
 |> Seq.map (Array.map parseShape >> arrayToTuple >> score)
