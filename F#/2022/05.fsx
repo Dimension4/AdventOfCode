@@ -46,5 +46,3 @@ instructions
 |> Array.choose List.tryHead
 |> String
 |> printfn "part 2: %s"
-
-
