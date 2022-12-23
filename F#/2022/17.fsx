@@ -1,4 +1,4 @@
-﻿open System
+open System
 open System.Collections
 open System.Runtime.CompilerServices
 open System.Text
