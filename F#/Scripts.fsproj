@@ -1,0 +1,6 @@
+﻿<Project>
+  <ItemGroup>
+    <None Include="**/*.fsx" />
+    <None Include="**/*.md" />
+  </ItemGroup>
+</Project>
