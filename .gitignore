@@ -18,5 +18,8 @@
 # rust
 target/
 
-#koka
+# koka
 .koka/
+
+# input files
+*.txt
